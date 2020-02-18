@@ -45,7 +45,7 @@ class ThreadsController extends Controller {
 	 * @return \Illuminate\Http\Response
 	 */
 	public function show( Thread $thread ) {
-		//
+		return view( 'threads.show', compact( 'thread' ) );
 	}
 	
 	/**
