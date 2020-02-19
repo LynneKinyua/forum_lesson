@@ -6,25 +6,22 @@ use App\Thread;
 use Illuminate\Http\Request;
  
 class ThreadsController extends Controller {
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
+	public function __construct()
+    {
+        $this->middleware('auth')->except(['index', 'show']);
+	}
+	
 	public function index() {
 		$threads = Thread::latest()->get();
 		
 		return view( 'threads.index', compact( 'threads' ) );
 	}
 	
-	/**
-	 * Show the form for creating a new resource.
-	 *
-	 * @return \Illuminate\Http\Response
-	 */
-	public function create() {
-		//
-	}
+	public function create()
+    {
+        return view('threads.create');
+    }
+	
 	
 	public function store(Request $request)
     {
