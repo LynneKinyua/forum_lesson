@@ -26,7 +26,8 @@ class ThreadsController extends Controller {
 	public function store(Request $request)
     {
         $thread = Thread::create([
-            'user_id' => auth()->id(),
+			'user_id' => auth()->id(),
+			'channel_id' => request('channel_id'),
             'title' => request('title'),
             'body' => request('body')
         ]);
@@ -70,4 +71,6 @@ class ThreadsController extends Controller {
 	public function destroy( Thread $thread ) {
 		//
 	}
+
+	
 }
