@@ -10,7 +10,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 class CreateThreadsTest extends TestCase
 {
     use DatabaseMigrations;
-
+ 
     function test_guest_can_not_create_threads()
     {
         $this->get('/threads/create')->assertRedirect('/login');
@@ -22,11 +22,32 @@ class CreateThreadsTest extends TestCase
     {
         $this->withoutExceptionHandling()->signIn();
  
-        $thread = create('App\Thread');
+        $thread = make('App\Thread');
  
-        $this->post('/threads', $thread->toArray());
+        $response = $this->post('/threads', $thread->toArray());
  
-        $this->get($thread->path())->assertSee($thread->title);
+        $this->get($response->headers->get('Location'))
+            ->assertSee($thread->body)
+            ->assertSee($thread->title);
+    }
+ 
+    function test_a_thread_requires_a_title()
+    {
+        $this->publishThread(['title' => null])->assertSessionHasErrors('title');
+    }
+ 
+    function test_a_thread_requires_a_body()
+    {
+        $this->publishThread(['body' => null])->assertSessionHasErrors('body');
+    }
+    
+    public function publishThread($overrides = [])
+    {
+        $this->signIn();
+ 
+        $thread = make('App\Thread', $overrides);
+ 
+        return $this->post('/threads', $thread->toArray());
     }
 }
 
